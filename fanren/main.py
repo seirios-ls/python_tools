@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QTextEdit, QFrame
-from PyQt5.QtGui import QPalette, QColor, QResizeEvent, QKeyEvent
+from PyQt5.QtGui import QPalette, QColor, QResizeEvent, QKeyEvent, QMouseEvent, QCursor
 from PyQt5.QtCore import Qt
 import requests
 from bs4 import BeautifulSoup
@@ -13,7 +13,7 @@ class Example(QWidget):
         self.text = None
         self.palette = None
         self.document = None
-        self.color = '#333333'
+        self.color = '#2B2B2B'
         self.url = 'https://www.9txs.cc'
         self.routh = '/book/61781/870898.html'
 
@@ -33,7 +33,58 @@ class Example(QWidget):
         self.text.setPalette(self.text.palette)
         self.text.setPlainText('初始化中.....')
         self.text.setFrameShape(QFrame.NoFrame)
-        self.text.move(0, 0)
+        self.text.move(5, 5)
+        self.text.verticalScrollBar().setStyleSheet("QScrollBar:vertical"
+                                                    "{"
+                                                    "width:5px;"
+                                                    "background:rgba(0,0,0,0%);"
+                                                    "margin:0px,0px,0px,0px;"
+                                                    "padding-top:9px;"
+                                                    "padding-bottom:9px;"
+                                                    "}"
+                                                    "QScrollBar::handle:vertical"
+                                                    "{"
+                                                    "width:5px;"
+                                                    "background:rgba(0,0,0,25%);"
+                                                    " border-radius:5px;"
+                                                    "min-height:20;"
+                                                    "}"
+                                                    "QScrollBar::handle:vertical:hover"
+                                                    "{"
+                                                    "width:5px;"
+                                                    "background:rgba(0,0,0,50%);"
+                                                    " border-radius:5px;"
+                                                    "min-height:20;"
+                                                    "}"
+                                                    "QScrollBar::add-line:vertical"
+                                                    "{"
+                                                    "height:9px;width:5px;"
+                                                    "border-image:url(:/images/a/3.png);"
+                                                    "subcontrol-position:bottom;"
+                                                    "}"
+                                                    "QScrollBar::sub-line:vertical"
+                                                    "{"
+                                                    "height:9px;width:5px;"
+                                                    "border-image:url(:/images/a/1.png);"
+                                                    "subcontrol-position:top;"
+                                                    "}"
+                                                    "QScrollBar::add-line:vertical:hover"
+                                                    "{"
+                                                    "height:9px;width:5px;"
+                                                    "border-image:url(:/images/a/4.png);"
+                                                    "subcontrol-position:bottom;"
+                                                    "}"
+                                                    "QScrollBar::sub-line:vertical:hover"
+                                                    "{"
+                                                    "height:9px;width:5px;"
+                                                    "border-image:url(:/images/a/2.png);"
+                                                    "subcontrol-position:top;"
+                                                    "}"
+                                                    "QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical"
+                                                    "{"
+                                                    "background:rgba(0,0,0,10%);"
+                                                    "border-radius:5px;"
+                                                    "}")
 
         self.setGeometry(400, 500, 500, 300)
         self.palette = QPalette()
@@ -41,13 +92,14 @@ class Example(QWidget):
 
         self.setPalette(self.palette)
         self.setWindowTitle('Absolute')
+        self.setWindowFlag(Qt.FramelessWindowHint)
 
         self.show()
         self.config()
         self.setText()
 
     def resizeEvent(self, event: QResizeEvent):
-        width = self.size().width()
+        width = self.size().width()-5
         height = self.size().height()
         self.text.resize(width, height)
 
@@ -69,6 +121,9 @@ class Example(QWidget):
     def keyReleaseEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Right:
             self.setText()
+        if event.key() == Qt.Key_Escape:
+            self.showMinimized()
+
 
     def config(self):
         with open('./config.txt', encoding='utf-8') as config:
@@ -77,6 +132,22 @@ class Example(QWidget):
     def setConfig(self):
         with open('./config.txt', 'w', encoding='utf-8') as config:
             config.write(self.routh)
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == Qt.LeftButton:
+            self.m_flag = True
+            self.m_Pos = event.globalPos() - self.pos()
+            event.accept()
+            self.setCursor(QCursor(Qt.OpenHandCursor))
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        if Qt.LeftButton and self.m_flag:
+            self.move(event.globalPos() - self.m_Pos)
+            event.accept()
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        self.m_flag = False
+        self.setCursor(QCursor(Qt.ArrowCursor))
 
 
 if __name__ == '__main__':
