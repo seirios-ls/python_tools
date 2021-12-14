@@ -13,9 +13,11 @@ class Example(QWidget):
         self.text = None
         self.palette = None
         self.document = None
-        self.color = '#2B2B2B'
+        self.color = '#232525'
         self.url = 'https://www.9txs.cc'
         self.routh = '/book/61781/870898.html'
+        self.m_flag = False
+        self.m_Pos = None
 
         self.initUI()
 
@@ -123,7 +125,6 @@ class Example(QWidget):
             self.setText()
         if event.key() == Qt.Key_Escape:
             self.showMinimized()
-
 
     def config(self):
         with open('./config.txt', encoding='utf-8') as config:

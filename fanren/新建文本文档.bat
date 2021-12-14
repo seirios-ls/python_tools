@@ -1,2 +1,2 @@
 @echo off
-python main.py
+python E:\wolf\python_tools\fanren\main.py
